@@ -26,17 +26,23 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   var _pageIndex = 0;
-  final PageController _pageController = PageController();
+  //final PageController _pageController = PageController();
 
+  /*
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
   }
+  */
 
   @override
   Widget build(BuildContext context) {
-    print('build: _pageIndex = $_pageIndex');
+    //TODO: Recreating the PageController on every build
+    //TODO: removes all the animations!
+    final PageController _pageController =
+        PageController(initialPage: _pageIndex);
+
     var pages = <Widget>[
       Page1(),
       Page2(),
@@ -46,29 +52,27 @@ class _HomeState extends State<Home> {
     final actions = [
       IconButton(
         icon: Icon(Icons.arrow_back_ios),
-        onPressed: /*_pageIndex == 0
+        onPressed: _pageIndex == 0
             ? null
-            :*/
-            () {
-          _pageIndex--;
-          _pageController.previousPage(
-            curve: Curves.easeInOut,
-            duration: Duration(seconds: 1),
-          );
-        },
+            : () {
+                _pageController.previousPage(
+                  curve: Curves.easeInOut,
+                  duration: Duration(seconds: 1),
+                );
+                setState(() => _pageIndex--);
+              },
       ),
       IconButton(
         icon: Icon(Icons.arrow_forward_ios),
-        onPressed: /*_pageIndex >= pages.length - 1
+        onPressed: _pageIndex >= pages.length - 1
             ? null
-            :*/
-            () {
-          _pageIndex++;
-          _pageController.nextPage(
-            curve: Curves.easeInOut,
-            duration: Duration(seconds: 1),
-          );
-        },
+            : () {
+                _pageController.nextPage(
+                  curve: Curves.easeInOut,
+                  duration: Duration(seconds: 1),
+                );
+                setState(() => _pageIndex++);
+              },
       ),
     ];
 
@@ -83,7 +87,9 @@ class _HomeState extends State<Home> {
                 children: pages,
                 controller: _pageController,
                 onPageChanged: (index) {
-                  _pageIndex = index;
+                  //TODO: This causes PageView to re-render which
+                  //TODO: causes it to return to the first page!
+                  setState(() => _pageIndex = index);
                 },
                 //scrollDirection: Axis.vertical,
               ),
@@ -102,12 +108,12 @@ class _HomeState extends State<Home> {
                         size: 16,
                       ),
                       onPressed: () {
-                        _pageIndex = index;
                         _pageController.animateToPage(
-                          _pageIndex,
+                          index,
                           duration: Duration(seconds: 1),
                           curve: Curves.easeInOut,
                         );
+                        setState(() => _pageIndex = index);
                       },
                     ),
                 ],
