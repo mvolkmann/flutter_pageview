@@ -83,8 +83,6 @@ class _HomeState extends State<Home> {
                 children: pages,
                 controller: _pageController,
                 onPageChanged: (index) {
-                  print('onPageChanged: index = $index');
-                  //setState(() => _pageIndex = index);
                   _pageIndex = index;
                 },
                 //scrollDirection: Axis.vertical,
