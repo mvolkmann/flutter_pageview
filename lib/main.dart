@@ -25,27 +25,24 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final PageController _pageController = PageController();
+  final PageController _controller = PageController();
   var _pageIndex = 0;
   final _pages = <Widget>[Page1(), Page2(), Page3()];
 
   IconButton _buildButton(bool forward) {
     var hide = forward ? _pageIndex >= _pages.length - 1 : _pageIndex == 0;
     var icon = forward ? Icons.arrow_forward_ios : Icons.arrow_back_ios;
+    var method = forward ? _controller.nextPage : _controller.previousPage;
     return IconButton(
       icon: Icon(icon),
       onPressed: hide
           ? null
           : () {
-              var method = forward
-                  ? _pageController.nextPage
-                  : _pageController.previousPage;
               method(
                 curve: Curves.easeInOut,
                 duration: Duration(seconds: 1),
               );
-              var delta = forward ? 1 : -1;
-              setState(() => _pageIndex += delta);
+              setState(() => _pageIndex += forward ? 1 : -1);
             },
     );
   }
@@ -64,7 +61,7 @@ class _HomeState extends State<Home> {
             Expanded(
               child: PageView(
                 children: _pages,
-                controller: _pageController,
+                controller: _controller,
                 onPageChanged: (index) {
                   setState(() => _pageIndex = index);
                 },
@@ -84,7 +81,7 @@ class _HomeState extends State<Home> {
                         size: 16,
                       ),
                       onPressed: () {
-                        _pageController.animateToPage(
+                        _controller.animateToPage(
                           index,
                           duration: Duration(seconds: 1),
                           curve: Curves.easeInOut,
