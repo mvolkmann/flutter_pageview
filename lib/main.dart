@@ -27,49 +27,43 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final PageController _pageController = PageController();
   var _pageIndex = 0;
+  final _pages = <Widget>[Page1(), Page2(), Page3()];
+
+  IconButton _buildButton(bool forward) {
+    var hide = forward ? _pageIndex >= _pages.length - 1 : _pageIndex == 0;
+    var icon = forward ? Icons.arrow_forward_ios : Icons.arrow_back_ios;
+    return IconButton(
+      icon: Icon(icon),
+      onPressed: hide
+          ? null
+          : () {
+              var method = forward
+                  ? _pageController.nextPage
+                  : _pageController.previousPage;
+              method(
+                curve: Curves.easeInOut,
+                duration: Duration(seconds: 1),
+              );
+              var delta = forward ? 1 : -1;
+              setState(() => _pageIndex += delta);
+            },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    var pages = <Widget>[Page1(), Page2(), Page3()];
-
-    final actions = [
-      IconButton(
-        icon: Icon(Icons.arrow_back_ios),
-        onPressed: _pageIndex == 0
-            ? null
-            : () {
-                _pageController.previousPage(
-                  curve: Curves.easeInOut,
-                  duration: Duration(seconds: 1),
-                );
-                setState(() => _pageIndex--);
-              },
-      ),
-      IconButton(
-        icon: Icon(Icons.arrow_forward_ios),
-        onPressed: _pageIndex >= pages.length - 1
-            ? null
-            : () {
-                _pageController.nextPage(
-                  curve: Curves.easeInOut,
-                  duration: Duration(seconds: 1),
-                );
-                setState(() => _pageIndex++);
-              },
-      ),
-    ];
-
     return Scaffold(
       appBar: AppBar(
         title: Text('PageView Demo'),
-        actions: actions,
+        leading: _buildButton(false),
+        actions: [_buildButton(true)],
       ),
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
               child: PageView(
-                children: pages,
+                children: _pages,
                 controller: _pageController,
                 onPageChanged: (index) {
                   setState(() => _pageIndex = index);
@@ -81,7 +75,7 @@ class _HomeState extends State<Home> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  for (var index = 0; index < pages.length; index++)
+                  for (var index = 0; index < _pages.length; index++)
                     IconButton(
                       icon: Icon(
                         Icons.circle,
