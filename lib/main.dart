@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const MyApp());
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final PageController _pageController = PageController(initialPage: 0);
+
+  MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,13 +14,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Home(),
+      home: Home(pageController: _pageController),
     );
   }
 }
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  final PageController pageController;
+
+  const Home({Key? key, required this.pageController}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -26,23 +30,9 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   var _pageIndex = 0;
-  //final PageController _pageController = PageController();
-
-  /*
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-  */
 
   @override
   Widget build(BuildContext context) {
-    //TODO: Recreating the PageController on every build
-    //TODO: removes all the animations!
-    final PageController _pageController =
-        PageController(initialPage: _pageIndex);
-
     var pages = <Widget>[
       Page1(),
       Page2(),
@@ -55,7 +45,7 @@ class _HomeState extends State<Home> {
         onPressed: _pageIndex == 0
             ? null
             : () {
-                _pageController.previousPage(
+                widget.pageController.previousPage(
                   curve: Curves.easeInOut,
                   duration: Duration(seconds: 1),
                 );
@@ -67,7 +57,7 @@ class _HomeState extends State<Home> {
         onPressed: _pageIndex >= pages.length - 1
             ? null
             : () {
-                _pageController.nextPage(
+                widget.pageController.nextPage(
                   curve: Curves.easeInOut,
                   duration: Duration(seconds: 1),
                 );
@@ -77,25 +67,24 @@ class _HomeState extends State<Home> {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: Text('PageView Demo'), actions: actions),
+      appBar: AppBar(
+        title: Text('PageView Demo'),
+        actions: actions,
+      ),
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
-              key: GlobalKey(),
               child: PageView(
                 children: pages,
-                controller: _pageController,
+                controller: widget.pageController,
                 onPageChanged: (index) {
-                  //TODO: This causes PageView to re-render which
-                  //TODO: causes it to return to the first page!
                   setState(() => _pageIndex = index);
                 },
                 //scrollDirection: Axis.vertical,
               ),
             ),
             SizedBox(
-              key: GlobalKey(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -108,7 +97,7 @@ class _HomeState extends State<Home> {
                         size: 16,
                       ),
                       onPressed: () {
-                        _pageController.animateToPage(
+                        widget.pageController.animateToPage(
                           index,
                           duration: Duration(seconds: 1),
                           curve: Curves.easeInOut,
