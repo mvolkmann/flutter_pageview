@@ -12,21 +12,20 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Home(),
+      home: const Home(),
     );
   }
 }
 
 class Home extends StatefulWidget {
-  final PageController _pageController = PageController(initialPage: 0);
-
-  Home({Key? key}) : super(key: key);
+  const Home({Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
+  final PageController _pageController = PageController();
   var _pageIndex = 0;
 
   @override
@@ -39,7 +38,7 @@ class _HomeState extends State<Home> {
         onPressed: _pageIndex == 0
             ? null
             : () {
-                widget._pageController.previousPage(
+                _pageController.previousPage(
                   curve: Curves.easeInOut,
                   duration: Duration(seconds: 1),
                 );
@@ -51,7 +50,7 @@ class _HomeState extends State<Home> {
         onPressed: _pageIndex >= pages.length - 1
             ? null
             : () {
-                widget._pageController.nextPage(
+                _pageController.nextPage(
                   curve: Curves.easeInOut,
                   duration: Duration(seconds: 1),
                 );
@@ -71,7 +70,7 @@ class _HomeState extends State<Home> {
             Expanded(
               child: PageView(
                 children: pages,
-                controller: widget._pageController,
+                controller: _pageController,
                 onPageChanged: (index) {
                   setState(() => _pageIndex = index);
                 },
@@ -91,7 +90,7 @@ class _HomeState extends State<Home> {
                         size: 16,
                       ),
                       onPressed: () {
-                        widget._pageController.animateToPage(
+                        _pageController.animateToPage(
                           index,
                           duration: Duration(seconds: 1),
                           curve: Curves.easeInOut,
