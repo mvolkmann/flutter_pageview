@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
-  final PageController _pageController = PageController(initialPage: 0);
-
-  MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,15 +12,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Home(pageController: _pageController),
+      home: Home(),
     );
   }
 }
 
 class Home extends StatefulWidget {
-  final PageController pageController;
+  final PageController _pageController = PageController(initialPage: 0);
 
-  const Home({Key? key, required this.pageController}) : super(key: key);
+  Home({Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -33,11 +31,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    var pages = <Widget>[
-      Page1(),
-      Page2(),
-      Page3(),
-    ];
+    var pages = <Widget>[Page1(), Page2(), Page3()];
 
     final actions = [
       IconButton(
@@ -45,7 +39,7 @@ class _HomeState extends State<Home> {
         onPressed: _pageIndex == 0
             ? null
             : () {
-                widget.pageController.previousPage(
+                widget._pageController.previousPage(
                   curve: Curves.easeInOut,
                   duration: Duration(seconds: 1),
                 );
@@ -57,7 +51,7 @@ class _HomeState extends State<Home> {
         onPressed: _pageIndex >= pages.length - 1
             ? null
             : () {
-                widget.pageController.nextPage(
+                widget._pageController.nextPage(
                   curve: Curves.easeInOut,
                   duration: Duration(seconds: 1),
                 );
@@ -77,7 +71,7 @@ class _HomeState extends State<Home> {
             Expanded(
               child: PageView(
                 children: pages,
-                controller: widget.pageController,
+                controller: widget._pageController,
                 onPageChanged: (index) {
                   setState(() => _pageIndex = index);
                 },
@@ -97,7 +91,7 @@ class _HomeState extends State<Home> {
                         size: 16,
                       ),
                       onPressed: () {
-                        widget.pageController.animateToPage(
+                        widget._pageController.animateToPage(
                           index,
                           duration: Duration(seconds: 1),
                           curve: Curves.easeInOut,
