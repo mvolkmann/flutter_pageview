@@ -109,7 +109,7 @@ class Page1 extends StatelessWidget {
       child: Center(
         child: Text('This is page #1.'),
       ),
-      color: Colors.pink,
+      color: Colors.pink[100],
     );
   }
 }
@@ -123,7 +123,7 @@ class Page2 extends StatelessWidget {
       child: Center(
         child: Text('This is page #2.'),
       ),
-      color: Colors.yellow,
+      color: Colors.yellow[100],
     );
   }
 }
@@ -137,7 +137,7 @@ class Page3 extends StatelessWidget {
       child: Center(
         child: Text('This is page #3.'),
       ),
-      color: Colors.lightBlue,
+      color: Colors.blue[100],
     );
   }
 }
