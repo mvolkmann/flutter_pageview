@@ -24,13 +24,21 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+// The mixin is required in order to set the TabController vsync argument.
+class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   final PageController _controller = PageController();
-  var _pageIndex = 0;
   final _pages = <Widget>[Page1(), Page2(), Page3()];
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: _pages.length, vsync: this);
+  }
 
   IconButton _buildButton(bool forward) {
-    var hide = forward ? _pageIndex >= _pages.length - 1 : _pageIndex == 0;
+    var index = _tabController.index;
+    var hide = forward ? index >= _pages.length - 1 : index == 0;
     var icon = forward ? Icons.arrow_forward_ios : Icons.arrow_back_ios;
     var method = forward ? _controller.nextPage : _controller.previousPage;
     return IconButton(
@@ -42,9 +50,15 @@ class _HomeState extends State<Home> {
                 curve: Curves.easeInOut,
                 duration: Duration(seconds: 1),
               );
-              setState(() => _pageIndex += forward ? 1 : -1);
+              setPageIndex(_tabController.index + (forward ? 1 : -1));
             },
     );
+  }
+
+  void setPageIndex(int pageIndex) {
+    setState(() {
+      _tabController.index = pageIndex;
+    });
   }
 
   @override
@@ -62,36 +76,15 @@ class _HomeState extends State<Home> {
               child: PageView(
                 children: _pages,
                 controller: _controller,
-                onPageChanged: (index) {
-                  setState(() => _pageIndex = index);
-                },
+                onPageChanged: setPageIndex,
                 //scrollDirection: Axis.vertical,
               ),
             ),
-            SizedBox(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for (var index = 0; index < _pages.length; index++)
-                    IconButton(
-                      icon: Icon(
-                        Icons.circle,
-                        color:
-                            index == _pageIndex ? Colors.black : Colors.black26,
-                        size: 16,
-                      ),
-                      onPressed: () {
-                        _controller.animateToPage(
-                          index,
-                          duration: Duration(seconds: 1),
-                          curve: Curves.easeInOut,
-                        );
-                        setState(() => _pageIndex = index);
-                      },
-                    ),
-                ],
-              ),
-              height: 30,
+            TabPageSelector(
+              color: Colors.pink,
+              controller: _tabController,
+              indicatorSize: 20,
+              selectedColor: Colors.purple,
             ),
           ],
         ),
