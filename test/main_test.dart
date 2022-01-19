@@ -13,7 +13,7 @@ import 'package:flutter_pageview/main.dart';
 //import 'package:flutter_pageview/page1.dart';
 
 void main() {
-  testWidgets('Page 1', (WidgetTester tester) async {
+  testWidgets('Page1', (WidgetTester tester) async {
     // Build the app and trigger the first frame.
     await tester.pumpWidget(MyApp());
     //await tester.pumpWidget(MaterialApp(home: Home()));
@@ -26,11 +26,11 @@ void main() {
 
     var name = 'Mark';
     await tester.enterText(nameField, name);
-    await tester.pump(); // rebuilds widget after a state change
+    await tester.pumpAndSettle(); // rebuilds widget after a state change
     expect(find.text('Hello, $name!'), findsOneWidget);
 
     await tester.tap(shoutBtn);
-    await tester.pump(); // rebuilds widget after a state change
+    await tester.pumpAndSettle(); // rebuilds widget after a state change
     expect(find.text('Hello, ${name.toUpperCase()}!'), findsOneWidget);
   });
 
@@ -46,7 +46,6 @@ void main() {
 
     var backBtn = find.byKey(ValueKey('backBtn'));
     var forwardBtn = find.byKey(ValueKey('forwardBtn'));
-    //var forwardBtn = find.byIcon(Icons.arrow_forward_ios);
     // Also see the find methods byIcon, byType,
     // byWidget, and byWidgetPredicate.
 
