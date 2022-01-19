@@ -10,6 +10,7 @@ class Page3 extends StatelessWidget {
         child: Text('This is page #3.'),
       ),
       color: Colors.blue[100],
+      key: Key('page3'),
     );
   }
 }

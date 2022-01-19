@@ -25,7 +25,6 @@ class _HomeState extends State<Home> {
       onPressed: hide
           ? null
           : () {
-              print('got press; forward = $forward');
               method(
                 curve: Curves.easeInOut,
                 duration: Duration(milliseconds: 500),
@@ -51,7 +50,6 @@ class _HomeState extends State<Home> {
                 children: _pages,
                 controller: _controller,
                 onPageChanged: (index) {
-                  print('onPageChanged: index = $index');
                   setState(() => _pageIndex = index);
                 },
                 //scrollDirection: Axis.vertical,

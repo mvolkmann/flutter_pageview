@@ -34,30 +34,53 @@ void main() {
     expect(find.text('Hello, ${name.toUpperCase()}!'), findsOneWidget);
   });
 
-  testWidgets('go to Page 2', (WidgetTester tester) async {
+  testWidgets('forward and back buttons', (WidgetTester tester) async {
+    Future<void> changePage(button, expectedText) async {
+      await tester.tap(button);
+      await tester.pumpAndSettle();
+      expect(find.text(expectedText), findsOneWidget);
+    }
+
     // Build the app and trigger the first frame.
     await tester.pumpWidget(MyApp());
 
-    //var forwardBtn = find.byIcon(Icons.arrow_forward_ios);
+    var backBtn = find.byKey(ValueKey('backBtn'));
     var forwardBtn = find.byKey(ValueKey('forwardBtn'));
-    //var backBtn = find.byKey(ValueKey('backBtn'));
-    var page1 = find.byKey(ValueKey('page1'));
+    //var forwardBtn = find.byIcon(Icons.arrow_forward_ios);
     // Also see the find methods byIcon, byType,
     // byWidget, and byWidgetPredicate.
-    // Tap the '>' IconButton to go to next page.
 
-    await tester.tap(forwardBtn);
+    // Verify that we can change pages with the forward and back buttons.
+    expect(find.text('This is page #1.'), findsOneWidget);
+    await changePage(forwardBtn, 'This is page #2.');
+    await changePage(forwardBtn, 'This is page #3.');
+    await changePage(backBtn, 'This is page #2.');
+    await changePage(backBtn, 'This is page #1.');
+  });
 
-    // Swipe left to advance to page #2.
-    double deviceWidth = 600; // MediaQuery.of(context).size.width;
-    var offset = Offset(-deviceWidth, 0);
-    var speed = 300.0; // pixels per second
-    await tester.fling(page1, offset, speed);
+  testWidgets('swipe left and right', (WidgetTester tester) async {
+    Future<void> swipe(page, swipeLeft, expectedText) async {
+      double deviceWidth = 600; // MediaQuery.of(context).size.width;
+      var offset = Offset(deviceWidth * (swipeLeft ? 1 : -1), 0);
+      var speed = 300.0; // pixels per second
+      await tester.fling(page, offset, speed);
+      await tester.pumpAndSettle();
 
-    // Wait for the page transition animation to complete.
-    await tester.pump(Duration(seconds: 1));
+      expect(find.text(expectedText), findsOneWidget);
+    }
 
-    // Verify that the page changed.
-    //expect(find.text('This is page #2.'), findsOneWidget);
+    // Build the app and trigger the first frame.
+    await tester.pumpWidget(MyApp());
+
+    var page1 = find.byKey(ValueKey('page1'));
+    var page2 = find.byKey(ValueKey('page2'));
+    var page3 = find.byKey(ValueKey('page3'));
+
+    await swipe(page1, false, 'This is page #2.'); // goes forward
+    await swipe(page2, false, 'This is page #3.'); // goes forward
+    await swipe(page3, false, 'This is page #3.'); // stays on same page
+    await swipe(page3, true, 'This is page #2.'); // goes backward
+    await swipe(page2, true, 'This is page #1.'); // goes backward
+    await swipe(page1, true, 'This is page #1.'); // stays on same page
   });
 }
