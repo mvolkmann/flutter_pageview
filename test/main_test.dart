@@ -69,7 +69,6 @@ void main() {
       expect(find.text(expectedText), findsOneWidget);
     }
 
-    // Build the app and trigger the first frame.
     await tester.pumpWidget(MyApp());
 
     var page1 = find.byKey(ValueKey('page1'));
@@ -82,5 +81,20 @@ void main() {
     await swipe(page3, true, 'This is page #2.'); // goes backward
     await swipe(page2, true, 'This is page #1.'); // goes backward
     await swipe(page1, true, 'This is page #1.'); // stays on same page
+  });
+
+  testWidgets('tap dots', (WidgetTester tester) async {
+    Future<void> tapDot(int number) async {
+      var dot = find.byKey(ValueKey('dot$number'));
+      await tester.tap(dot);
+      await tester.pumpAndSettle();
+      expect(find.text('This is page #$number.'), findsOneWidget);
+    }
+
+    await tester.pumpWidget(MyApp());
+
+    for (var number = 1; number <= 3; number++) {
+      await tapDot(number);
+    }
   });
 }

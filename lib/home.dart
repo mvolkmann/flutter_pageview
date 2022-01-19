@@ -67,6 +67,7 @@ class _HomeState extends State<Home> {
                             index == _pageIndex ? Colors.black : Colors.black26,
                         size: 16,
                       ),
+                      key: Key('dot${index + 1}'),
                       onPressed: () {
                         _controller.animateToPage(
                           index,
