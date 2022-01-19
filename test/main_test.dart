@@ -1,23 +1,14 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility that Flutter provides. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-//import 'package:flutter_pageview/home.dart';
 import 'package:flutter_pageview/main.dart';
-//import 'package:flutter_pageview/page1.dart';
 
 void main() {
   testWidgets('Page1', (WidgetTester tester) async {
     // Build the app and trigger the first frame.
     await tester.pumpWidget(MyApp());
-    //await tester.pumpWidget(MaterialApp(home: Home()));
 
+    // Find widgets.
     var shoutBtn = find.byKey(ValueKey('shoutBtn'));
     var nameField = find.byKey(ValueKey('nameField'));
 
@@ -26,11 +17,11 @@ void main() {
 
     var name = 'Mark';
     await tester.enterText(nameField, name);
-    await tester.pumpAndSettle(); // rebuilds widget after a state change
+    await tester.pumpAndSettle();
     expect(find.text('Hello, $name!'), findsOneWidget);
 
     await tester.tap(shoutBtn);
-    await tester.pumpAndSettle(); // rebuilds widget after a state change
+    await tester.pumpAndSettle();
     expect(find.text('Hello, ${name.toUpperCase()}!'), findsOneWidget);
   });
 
@@ -41,13 +32,10 @@ void main() {
       expect(find.text(expectedText), findsOneWidget);
     }
 
-    // Build the app and trigger the first frame.
     await tester.pumpWidget(MyApp());
 
     var backBtn = find.byKey(ValueKey('backBtn'));
     var forwardBtn = find.byKey(ValueKey('forwardBtn'));
-    // Also see the find methods byIcon, byType,
-    // byWidget, and byWidgetPredicate.
 
     // Verify that we can change pages with the forward and back buttons.
     expect(find.text('This is page #1.'), findsOneWidget);
