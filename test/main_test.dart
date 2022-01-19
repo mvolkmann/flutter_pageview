@@ -32,23 +32,40 @@ void main() {
       expect(find.text(expectedText), findsOneWidget);
     }
 
+    bool buttonEnabled(button) =>
+        tester.widget<IconButton>(button).onPressed != null;
+
     await tester.pumpWidget(MyApp());
 
     var backBtn = find.byKey(ValueKey('backBtn'));
     var forwardBtn = find.byKey(ValueKey('forwardBtn'));
 
-    // Verify that we can change pages with the forward and back buttons.
     expect(find.text('This is page #1.'), findsOneWidget);
+
+    // Verify that we can change pages with the forward and back buttons.
+    expect(buttonEnabled(backBtn), isFalse);
+    expect(buttonEnabled(forwardBtn), isTrue);
     await changePage(forwardBtn, 'This is page #2.');
+    expect(buttonEnabled(backBtn), isTrue);
     await changePage(forwardBtn, 'This is page #3.');
+    expect(buttonEnabled(forwardBtn), isFalse);
     await changePage(backBtn, 'This is page #2.');
+    expect(buttonEnabled(forwardBtn), isTrue);
     await changePage(backBtn, 'This is page #1.');
+    expect(buttonEnabled(backBtn), isFalse);
   });
 
   testWidgets('swipe left and right', (WidgetTester tester) async {
     Future<void> swipe(page, swipeLeft, expectedText) async {
+      //TODO: How can we get the device width in a test?
+      var pSize = tester.binding.window.physicalSize;
+      tester.printToConsole('pSize = $pSize');
+      var offset = Offset(pSize.width, pSize.height);
+      tester.printToConsole(
+          'local size = ${tester.binding.globalToLocal(offset)}');
       double deviceWidth = 600; // MediaQuery.of(context).size.width;
-      var offset = Offset(deviceWidth * (swipeLeft ? 1 : -1), 0);
+
+      offset = Offset(deviceWidth * (swipeLeft ? 1 : -1), 0);
       var speed = 300.0; // pixels per second
       await tester.fling(page, offset, speed);
       await tester.pumpAndSettle();
