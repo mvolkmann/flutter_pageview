@@ -41,6 +41,7 @@ class _Page1State extends State<Page1> {
         ]),
       ),
       color: Colors.pink[100],
+      key: Key('page1'),
     );
   }
 }
