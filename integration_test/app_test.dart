@@ -50,19 +50,23 @@ void main() {
 
   testWidgets('swipe left and right', (WidgetTester tester) async {
     Future<void> swipe(page, swipeLeft, expectedText) async {
+      /*
       //TODO: How can we get the device width in a test?
       var pSize = tester.binding.window.physicalSize;
       tester.printToConsole('pSize = $pSize');
       var offset = Offset(pSize.width, pSize.height);
       tester.printToConsole(
           'local size = ${tester.binding.globalToLocal(offset)}');
+      */
       double deviceWidth = 600; // MediaQuery.of(context).size.width;
 
-      offset = Offset(deviceWidth * (swipeLeft ? 1 : -1), 0);
+      var offset = Offset(deviceWidth * (swipeLeft ? 1 : -1), 0);
       var speed = 300.0; // pixels per second
       await tester.fling(page, offset, speed);
       await tester.pumpAndSettle();
 
+      //TODO: Why does this fail in this integration test,
+      //TODO: but it passes in a widget test with the SAME CODE?
       expect(find.text(expectedText), findsOneWidget);
     }
 
