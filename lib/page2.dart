@@ -14,7 +14,7 @@ class _Page2State extends State<Page2> {
 
   void loadData() async {
     try {
-      average = await getAverageSalary();
+      average = await Employees.getAverageSalary();
       message = '';
     } catch (e) {
       print('error: $e');
@@ -43,6 +43,7 @@ class _Page2State extends State<Page2> {
             if (message.isNotEmpty) Text('Message: $message'),
             ElevatedButton(
               child: Text('Refresh'),
+              key: Key('page2Refresh'),
               onPressed: () {
                 setState(() {
                   message = '';

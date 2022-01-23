@@ -2,11 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flutter_pageview/main.dart';
+import 'package:flutter_pageview/page1.dart';
 
 void main() {
   testWidgets('Page1', (WidgetTester tester) async {
     // Build the app and trigger the first frame.
-    await tester.pumpWidget(MyApp());
+    // When testing a widget that does not return a `MaterialApp` widget,
+    // tests generally need to begin with the following:
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Page1(),
+        ),
+      ),
+    );
 
     // Find widgets.
     var shoutBtn = find.byKey(ValueKey('shoutBtn'));
@@ -35,6 +44,8 @@ void main() {
     bool buttonEnabled(button) =>
         tester.widget<IconButton>(button).onPressed != null;
 
+    // Build the app and trigger the first frame.
+    // Note that MyApp creates a `MaterialApp` that creates a `Scaffold`.
     await tester.pumpWidget(MyApp());
 
     var backBtn = find.byKey(ValueKey('backBtn'));
