@@ -67,17 +67,9 @@ void main() {
   });
 
   testWidgets('swipe left and right', (WidgetTester tester) async {
-    Future<void> swipe(page, swipeLeft, expectedText) async {
-      /*
-      //TODO: How can we get the device width in a test?
-      var pSize = tester.binding.window.physicalSize;
-      tester.printToConsole('pSize = $pSize');
-      var offset = Offset(pSize.width, pSize.height);
-      tester.printToConsole(
-          'local size = ${tester.binding.globalToLocal(offset)}');
-      */
-      double deviceWidth = 600; // MediaQuery.of(context).size.width;
+    var deviceWidth = 0.0;
 
+    Future<void> swipe(page, swipeLeft, expectedText) async {
       var offset = Offset(deviceWidth * (swipeLeft ? 1 : -1), 0);
       var speed = 300.0; // pixels per second
       await tester.fling(page, offset, speed);
@@ -87,6 +79,10 @@ void main() {
     }
 
     await tester.pumpWidget(MyApp());
+
+    // Get the device width.
+    final BuildContext context = tester.element(find.byType(Container));
+    deviceWidth = MediaQuery.of(context).size.width;
 
     var page1 = find.byKey(ValueKey('page1'));
     var page2 = find.byKey(ValueKey('page2'));
